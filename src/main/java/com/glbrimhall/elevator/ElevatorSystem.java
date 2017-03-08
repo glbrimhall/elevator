@@ -19,7 +19,7 @@ public class ElevatorSystem {
     protected static ArrayList< RunningElevator >  elevatorList = null;
 
     protected Thread                        requestThread = null;
-    protected FloorRequestQueue             floors = null;
+    protected ExternalRequestQueue             floors = null;
     
     public ElevatorSystem( int numFloors, int numElevators )
     {
@@ -37,7 +37,7 @@ public class ElevatorSystem {
         }
         
         // Create the floor request Queue:
-        floors = new FloorRequestQueue();
+        floors = new ExternalRequestQueue();
         requestThread = new Thread( floors );
     }
    
@@ -57,6 +57,9 @@ public class ElevatorSystem {
         }
     }
 
+    
+ 
+    
    /**
      * This method needs to be in it's own thread, with a queue of requests
      * because elevators may not automatically say they are available to take on

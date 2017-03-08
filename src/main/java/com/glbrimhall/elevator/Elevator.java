@@ -5,9 +5,6 @@
  */
 package com.glbrimhall.elevator;
 
-import java.util.Collections;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,24 +16,20 @@ import java.util.logging.Logger;
 public class Elevator implements Runnable {
 
     // Data Members
-    protected SortedSet< Integer >  requestedFloors = null;
-    protected Movement              currentMovement;
-    protected int                   currentFloor;
-    protected long                  traversedFloors;
-    protected long                  numRequests;
-    protected int                   defaultDoorOpenWaitSeconds;
-    protected boolean               inMaintenence;
-    protected boolean               moving;
+    protected ElevatorQueue             queue = null;
+    protected long                      traversedFloors;
+    protected long                      numRequests;
+    protected int                       defaultDoorOpenWaitSeconds;
+    protected boolean                   inMaintenence;
+    protected boolean                   moving;
     
     // Methods Members
     public Elevator()
     {
-        this.requestedFloors = Collections.synchronizedSortedSet( new TreeSet< Integer >() );
+        queue = new ElevatorQueue();
         this.traversedFloors = 0;
         this.numRequests = 0;
-        this.currentFloor = 0;
         this.defaultDoorOpenWaitSeconds = 30;
-        this.currentMovement = Movement.UP;
         this.inMaintenence = false;
         this.moving = false;
     }
@@ -57,8 +50,8 @@ public class Elevator implements Runnable {
     public boolean isInMaintenence()  { return inMaintenence; }
     public synchronized boolean setInMaintenence(boolean new_value) 
                                  { return inMaintenence = new_value; }
+    public int getCurrentFloor() { return queue.getCurrentFloor().floor; }
     public boolean isMoving()    { return moving; }
-    public int getCurrentFloor() { return currentFloor; }
     public long getTraversedFloors() { return traversedFloors; }
     public long getNumRequests() { return numRequests; }
     public SortedSet getRequestedFloors() { return requestedFloors; }
@@ -69,31 +62,14 @@ public class Elevator implements Runnable {
      */
     public int getNextFloor()
     {
-        if ( requestedFloors.isEmpty() )
+        if ( isInMaintenence() )
             { return -1; }
 
-        if ( getCurrentMovement() == Movement.UP )
-            {
-            // TreeSet.tailSet includes current floor if it exists, 
-            // need to remove current floor for algorithm below to be clean:
-            SortedSet aboveFloors = new TreeSet< Integer >( requestedFloors.tailSet( getCurrentFloors() ) );
-            aboveFloors.remove( getCurrentFloor() );
-
-            return aboveFloors().isEmpty() ? -1 : aboveFloors.first();
-            }
-        else
-        if ( getCurrentMovement() == Movement.DOWN )
-            {
-            SortedSet belowFloors = requestedFloors.headSet( getCurrentFloor() );
-            
-            return belowFloors.isEmpty() ? -1 : belowFloors.last();
-            }
+        return queue.getNextFloor();
     }
 
     protected synchronized boolean setMoving(boolean new_value) 
                                  { return moving = new_value; }
-    protected synchronized int setCurrentFloor(int new_floor ) 
-                                  { return currentFloor = new_floor; }
     protected Movement getCurrentMovement() { return currentMovement; }
     protected synchronized Movement setCurrentMovement(Movement new_movement) 
                                  { return currentMovement = new_movement; }
@@ -132,21 +108,30 @@ public class Elevator implements Runnable {
         if ( isInMaintenence() )
             { return false; }
 
-        if ( getCurrentFloor() == floor ) { return false; }
+        int currentFloor = getCurrentFloor();
+        
+        if ( currentFloor == floor ) { return false; }
 
         // Requirements check: should numRequests reflect number of times
         // people pushed buttons or number of times button press resulted
         // in actually being added to queue. Currented coded for the latter.
         ++numRequests;
 
-        requestedFloors.add( new Integer( floor ) );
+        if ( currentFloor < floor )
+        {
+            queue.addFloor( new FloorRequest( floor, Movement.DOWN ) );
+        }
+        else
+        {
+            queue.addFloor( new FloorRequest( floor, Movement.UP ) );
+        }
+            
         return true;
     }
     
     /**
      * Is the elevator stopping at a floor moving in a given direction ?
      * @param request the floor and direction request
-     * @param direction the direction of the request
      * @return the distance from the elevator to the floor. NOTE it
      *         may return -1 if the elevator isn't stopping at the floor
      */
@@ -155,8 +140,7 @@ public class Elevator implements Runnable {
         if ( isInMaintenence() )
             { return -1; }
         
-        if ( request.direction != getCurrentMovement() || 
-             ! requestedFloors.contains( request.floor ) )
+        if ( ! queue.containsFloor( request ) )
             { return -1; }
         
         return Math.abs( getCurrentFloor() - request.floor );
@@ -368,20 +352,9 @@ public class Elevator implements Runnable {
     {
         ++traveresedFloors;
         
-        if ( getCurrentMovement() == Movement.UP )
-        {
-            setCurrentFloor( getCurrentFloor() + 1);
-        }
-        else
-        if ( getCurrentMovement() == Movement.DOWN )
-        {
-            setCurrentFloor( getCurrentFloor() - 1);
-        }
+        queue.moveFloor();
         
-        if ( requestedFloor.contains( currentFloor ) )
-        {
-            if ( ! stopAndOpenDoors() ) { return false; }
-        }
+        stopAndOpenDoors();
         
         return true;
     }
