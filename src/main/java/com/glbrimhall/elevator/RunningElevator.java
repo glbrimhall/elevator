@@ -13,9 +13,9 @@ public class RunningElevator {
     public Thread   thread;
     public Elevator elevator;
     
-    public RunningElevator()
+    public RunningElevator( int elevatorNumber )
     {
-        this.elevator = new Elevator();
+        this.elevator = new Elevator( elevatorNumber );
         this.thread = new Thread( this.elevator );
     }
 }

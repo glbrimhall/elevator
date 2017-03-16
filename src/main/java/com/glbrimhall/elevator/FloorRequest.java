@@ -33,6 +33,11 @@ public class FloorRequest implements Comparable< FloorRequest > {
     }
 
     @Override
+    public String toString() {
+        return "[ " + Integer.toString(floor) + " " + direction.name() + " ]";
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -67,8 +72,8 @@ public class FloorRequest implements Comparable< FloorRequest > {
         }
         
         final FloorRequest that = (FloorRequest) obj;
-        final int this_val = this.floor;
-        final int that_val = that.floor;
+        int this_val = this.floor;
+        int that_val = that.floor;
         
         if ( this.direction == Movement.DOWN )
             { this_val = -this_val; }
@@ -79,4 +84,15 @@ public class FloorRequest implements Comparable< FloorRequest > {
         return Integer.compare( this_val, that_val );
     }
     
+    public void copy(FloorRequest obj) {
+        if (this == obj) {
+            return;
+        }
+        
+        floor = obj.floor;
+        direction = obj.direction;
+    }
+        
+
+
 }

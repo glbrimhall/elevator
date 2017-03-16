@@ -33,6 +33,10 @@ public class ParseList implements Runnable {
     
     public String Parse( String input ) {
 
+        if ( input.isEmpty() ) { 
+            return "";
+        }
+
         char inputToken = input.charAt(0);
         
         for( ParseCommand command: parseList ) {

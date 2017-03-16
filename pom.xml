@@ -10,4 +10,31 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>2.3.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <configuration>
+            <!-- mvn exec:exec -->
+            <executable>java</executable>
+            <!-- arguments>
+              <argument>-classpath</argument>
+              <classpath/>
+              <argument>com.glbrimhall.elevator.ElevatorSystem</argument>
+              <argument>n1f20</argument>
+            </arguments -->
+            <!-- mvn exec:java -->
+            <mainClass>com.glbrimhall.elevator.ElevatorSystem</mainClass>
+            <!-- commandlineArgs>-classpath %classpath com.glbrimhall.elevator.ElevatorSystem n1f20 e1f1-19</commandlineArgs -->
+            <commandlineArgs>-classpath %classpath -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=6000 com.glbrimhall.elevator.ElevatorSystem n1f20 e1f1-19</commandlineArgs>
+          </configuration>
+        </plugin>
+      </plugins>
+    </build>
 </project>

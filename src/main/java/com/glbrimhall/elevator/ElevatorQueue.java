@@ -5,8 +5,8 @@
  */
 package com.glbrimhall.elevator;
 
-import java.util.Collections;
-import java.util.SortedSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeSet;
 import java.util.Iterator;
 
@@ -15,67 +15,244 @@ import java.util.Iterator;
  * @author geoff
  */
 public class ElevatorQueue {
-    protected SortedSet< FloorRequest > requestedFloors = null;
-    protected Movement                  currentMovement;
-    protected FloorRequest              currentFloor = null;
-    protected Iterator                  moveFloor = null;
+    protected TreeSet< FloorRequest >   requestedFloors = null;
+    protected FloorRequest              servicing = null;
+    protected Iterator< FloorRequest >  moveFloor = null;
+    protected static final FloorRequest zeroFloor = new FloorRequest( 0, Movement.UP );
     
-
     public ElevatorQueue() 
     {
-        this.requestedFloors = Collections.synchronizedSortedSet( new TreeSet< FloorRequest >() );
+        this.requestedFloors = new TreeSet< FloorRequest >();
         this.moveFloor = this.requestedFloors.iterator();
-        this.currentMovement = Movement.UP;
+        this.servicing = new FloorRequest( 0, Movement.UP );
+        this.servicing.copy( zeroFloor );
     }
     
-    public FloorRequest getCurrentFloor() { return currentFloor; }
+    public FloorRequest getServicing() { return servicing; }
+
+    public synchronized boolean isEmpty() { return requestedFloors.isEmpty(); }
     
+    /** 
+     * Returns the highest floor the elevator will stop at.
+     * @return the next floor, or -1 if it has nothing left in current direction
+     */
+    public synchronized int getHighestFloor()
+    {
+        if ( requestedFloors.isEmpty() )
+            { return servicing.floor; }
+        
+        return Math.max( requestedFloors.first().floor, requestedFloors.last().floor);
+    }
+    
+    /** 
+     * Returns the lowest floor the elevator will stop at.
+     * @return the next floor, or -1 if it has nothing left in current direction
+     */
+    public synchronized int getLowestFloor()
+    {
+        if ( requestedFloors.isEmpty() )
+            { return servicing.floor; }
+        
+        FloorRequest lowest_down = requestedFloors.floor( zeroFloor );
+        FloorRequest lowest_up = requestedFloors.ceiling( zeroFloor );
+        
+        // Note mathematically both cannot be null if requestedFloors is not empty.
+        if ( lowest_down == null ) { return lowest_up.floor; }
+        if ( lowest_up == null ) { return lowest_down.floor; }
+
+        return Math.min( lowest_down.floor, lowest_up.floor);
+    }
+
     /** 
      * Returns the next floor the elevator will stop at.
      * @return the next floor, or -1 if it has nothing left in current direction
      */
-    public int getNextFloor()
+    public synchronized int getNextFloor()
     {
         if ( requestedFloors.isEmpty() )
             { return -1; }
         
-        // Java sucks ! can't deep copy moveFloor:
-        Iterator< FloorRequest > nextFloor = requestedFloors.iterator();
+        FloorRequest next = requestedFloors.higher( servicing );
         
-        while( nextFloor.hasNext() )
-        {
-            if ( nextFloor.next().equals( currentFloor ) )
-                { break; }
+        if ( next != null ) 
+            { return next.floor; }
+        else
+            { return requestedFloors.first().floor; }
+    }
+
+    public synchronized void addFloor( FloorRequest newFloor )
+    {
+        boolean waiting = requestedFloors.isEmpty();
+
+        requestedFloors.add( newFloor );
+        
+        if ( ElevatorSystem.isDebugging() ) {
+            System.out.println( "Adding [" + newFloor.toString() + "]" );
         }
 
-        if ( nextFloor.hasNext() )
-            {
-                return nextFloor.next().floor;
+        if ( waiting ) {
+            return;
+        }
+
+        // Java implementatin of iterators suck !
+        // Have to do this incredibly inefficient recreation
+        // of the iterator, looping through all elements
+        // just to avoid java.util.ConcurrentModificationException
+      
+        moveFloor = requestedFloors.tailSet( servicing ).iterator();
+
+        return;
+        /*        
+        if ( 0 < requestedFloors.first().compareTo( servicing ) ) {
+            return;
+        }
+
+        while( moveFloor.hasNext() ) {
+            FloorRequest next = moveFloor.next();
+            
+            if ( ElevatorSystem.isDebugging() ) {
+                System.out.println( "moveFloor syncing from [" + next.toString() 
+                    + "] to [" + servicing.toString() + "]" );
             }
-        return -1;
+            if ( 0 < next.compareTo( servicing ) ) {
+                break;
+            }
+        }
+        */
     }
 
-    public void addFloor( FloorRequest newFloor )
-    {
-        requestedFloors.add( newFloor );
-    }
-        
-    public boolean containsFloor( FloorRequest newFloor )
+    public synchronized boolean containsFloor( FloorRequest newFloor )
     {
         return requestedFloors.contains( newFloor );
     }
 
-    public int moveFloor()
+    public synchronized void moveFloor()
     {
-        if ( moveFloor.hasNext() )
-        {
-            currentFloor = moveFloor.next();
-            moveFloor.remove();
-        }
-        else
+        if ( ! moveFloor.hasNext() )
         {
             // We are at the top of our floor, reset back to the bottom
-            moveFloor = requestedFloor.iterator();
+            moveFloor = requestedFloors.iterator();
         }
+
+        if ( moveFloor.hasNext() )
+        {
+            servicing.copy( moveFloor.next() );
+            moveFloor.remove();
+        }
+    }
+
+    /**
+     * Calculates the distance of the elevator from an external request
+     * on a floor. 
+     * @param request the floor and direction request
+     * @return the distance from the elevator to the request. NOTE it
+     *         may return a negative value if elevator is already handling request
+     */
+    public synchronized int distanceToFloor( FloorRequest request )
+    {
+        // Elevator is stopped at a floor with doors open with no more floor
+        // requests queued, just waiting for someone walk in or get a request
+        // from another floor.
+        if ( requestedFloors.isEmpty() )
+            { return Math.abs( servicing.floor - request.floor ); }
+        
+        int distance = -1;
+
+        if ( request.direction == servicing.direction )
+            { 
+            
+            if ( request.direction == Movement.UP &&
+                 servicing.floor < request.floor )
+                { distance = request.floor - servicing.floor; }
+            else
+            if ( request.direction == Movement.DOWN &&
+                 servicing.floor > request.floor )
+                { distance = servicing.floor - request.floor; }
+            }
+        
+        if ( distance == -1 )
+            {
+            if ( servicing.direction == Movement.DOWN )
+                {
+                int lowestFloor = getLowestFloor();
+
+                distance = Math.abs( request.floor - lowestFloor ) +
+                       ( servicing.floor - lowestFloor );
+                }
+            else
+                {
+                int highestFloor = getHighestFloor();
+
+                distance = Math.abs( highestFloor - request.floor ) +
+                       ( highestFloor - servicing.floor );
+                }
+            }
+
+        // Give extra weight if we are already stopping.
+        if ( containsFloor( request ) )
+            { --distance; }
+        
+        return distance;
+    }
+    
+    public synchronized String report() {
+
+        if ( requestedFloors.isEmpty() ) {
+            return "[ ]";
+        }
+
+        StringBuilder    queue = new StringBuilder();
+        FloorRequest    last = null;
+        
+        queue.append( "[" );
+
+        Iterator< FloorRequest > floors = requestedFloors.iterator();
+        
+        while ( floors.hasNext() ) {
+            FloorRequest current = floors.next();
+            
+            if ( last == null || last.direction != current.direction ) {
+                queue.append(" ");
+                queue.append( current.direction.toString() );
+                queue.append(":");
+                last = current;
+            }
+            else {
+                queue.append( "," );
+            }
+                
+            queue.append( " " );
+            queue.append( current.floor );
+        }
+        queue.append( " ]" );
+        return queue.toString();
+    }
+
+    public synchronized static void reportQueues( List<RunningElevator> queues, int tab )
+    {
+        if ( tab < 1 )
+            { tab = 4; }
+
+        ArrayList< Iterator< FloorRequest > > elevatorList = new ArrayList();
+        
+        for( RunningElevator i: queues )
+            { elevatorList.add( i.elevator.getQueue().requestedFloors.iterator() ); }
+        
+        int finished = elevatorList.size();
+        
+        while( finished > 0 )
+            {
+            for( int i = 0; i < elevatorList.size(); ++i )
+                {
+                Iterator< FloorRequest > elevator = elevatorList.get( i );
+                if ( elevator.hasNext() )
+                    {
+                    System.out.format( elevator.next().toString() + tab );
+                    }
+                else
+                    { --finished; }
+                }
+            System.out.format( "\n" );
+            }
     }
 }

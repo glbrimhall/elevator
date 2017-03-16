@@ -15,7 +15,7 @@ import java.util.regex.*;
 public class ParseElevator extends ParseCommand {
 
     public ParseElevator() {
-        super( "e(\\d+)b([0-9,-]+)", "elevator <num> buttonfloorlist: example e2b2,4-6 means elevator 2 button 2, 4 through 6 pressed" );
+        super( "e(\\d+)f([0-9,-]+)", "elevator <num> floorlist: example e2f2,4-6 means elevator 2 floor button 2, 4 through 6 pressed" );
     }
 
     public String Parse( String cmd ) {
