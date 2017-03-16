@@ -8,6 +8,7 @@ package com.glbrimhall.elevator;
 import java.util.Collections;
 import java.util.List;
 import java.util.LinkedList;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,20 +20,24 @@ public class ElevatorSystem {
 
     protected static boolean                debug = false;
     protected static int                    maxFloors = 0;
-    protected List<RunningElevator>    elevatorList = null;
+    protected List<RunningElevator>         elevatorList = null;
     protected int                           rotateElevator = 0;
     protected boolean                       running = true;
     protected String                        lastReport = null;
+    protected Scanner                       input  = null;
 
     public ElevatorSystem()
     {
         elevatorList = Collections.synchronizedList(new LinkedList< RunningElevator >() );
         lastReport = new String();
+        input  = new Scanner( System.in );
     }
 
     public static boolean isDebugging() { return debug; }
 
     public List< RunningElevator > getElevatorList() { return elevatorList; }
+    
+    public Scanner getInput() { return input; }
 
     public boolean isInitialized() { return ! elevatorList.isEmpty(); }
     
@@ -74,11 +79,12 @@ public class ElevatorSystem {
    
     public void Shutdown() {
 
+        running = false;
+
         for( int i = 0; i < elevatorList.size(); ++i ) {
             maintenenceRequest( i );
         }
         
-        running = false;
     }
 
     public static int getMaxFloors() { return maxFloors; }
@@ -111,6 +117,21 @@ public class ElevatorSystem {
        return 0;
     }
 
+    public void waitToShutdown( Thread parseThread ) 
+    {
+       try {
+           for( RunningElevator elevator: elevatorList ) {
+                elevator.thread.join();
+
+           input.close();
+           parseThread.interrupt();
+           parseThread.join();
+           }
+        } catch (InterruptedException ex) {
+            Logger.getLogger( getClass().getName() ).log( Level.SEVERE, null, ex );
+        }
+       return;
+    }
     
    /**
      * This method assigns an external floor request to an elevator.
@@ -122,6 +143,10 @@ public class ElevatorSystem {
     
    public int floorRequest( int floor, Movement direction )
    {
+       if ( ! running ) {
+           return -1;
+       }
+
        FloorRequest request = new FloorRequest( floor, direction );
        
        // Current implementation of requestDistance will always return a value
@@ -224,8 +249,11 @@ public class ElevatorSystem {
            system.reportStatus();
            ElevatorSystem.sleepSeconds( system.getClass().getName(), 1 );
        }
+       
+       //system.waitToShutdown( parseThread );
        system.reportStatus();
        System.out.print( "ElevatorSystem Offline.\n" );
+       System.out.flush();
        System.exit(0);
    }
 }

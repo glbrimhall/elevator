@@ -80,6 +80,11 @@ public class Elevator implements Runnable {
         format.format("ELEVATOR[%2d] at floor %3d ", elevatorNumber, getCurrentFloor() );
         format.flush();
         
+        if ( isOffline() )
+        {
+            report.append( "offline. " );
+        }
+        else
         if ( isMoving() )
         {
             report.append( "moving. " );
@@ -165,7 +170,7 @@ public class Elevator implements Runnable {
         // incase people hold door open.
         // Note if a person comes into an elevator but never presses a floor 
         // button eleveator will just sit there ! 
-        while( queue.isEmpty() || actualSeconds < waitSeconds )
+        while( ( queue.isEmpty() || actualSeconds < waitSeconds ) && ! isOffline() )
         {
             ElevatorSystem.sleepSeconds( getClass().getName(), 1 );
             

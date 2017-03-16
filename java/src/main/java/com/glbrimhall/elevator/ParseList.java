@@ -21,15 +21,15 @@ public class ParseList implements Runnable {
     protected ElevatorSystem           elevatorSystem = null;
     
     public ParseList( ElevatorSystem system ) {
+        elevatorSystem = system;
+
         parseList = new ArrayList<ParseCommand>();
         
         parseList.add( new ParseQuit() );
         parseList.add( new ParseStatus() );
         parseList.add( new ParseNumberElevatorFloors() );
         parseList.add( new ParseElevator() );
-        parseList.add( new ParseFloor() );
-        
-        elevatorSystem = system;
+        parseList.add( new ParseFloor() );        
     }
     
     public String Parse( String input ) {
@@ -48,21 +48,25 @@ public class ParseList implements Runnable {
         
         return "Unknown command: " + input;
     }
-
     
     @Override
     public void run()
     {
-        Scanner  input  = new Scanner( System.in );
+        Scanner input = elevatorSystem.getInput();
 
-        while( elevatorSystem.isRunning() )
-        {
-            if ( input.hasNextLine() ) {
-                String result = Parse( input.nextLine() );
-                System.out.println( result );
+        try {
+            while( elevatorSystem.isRunning() )
+            {
+                if ( input.hasNextLine() ) {
+                    String result = Parse( input.nextLine() );
+                    System.out.println( result );
+                }
             }
         }
-        
-        input.close();
+        catch (IllegalStateException ex) {
+        }
+        finally {
+            input.close();
+        }
     }
 }
