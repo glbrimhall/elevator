@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  */
 public class ElevatorSystem {
 
-    protected static boolean                debug = true;
+    protected static boolean                debug = false;
     protected static int                    maxFloors = 0;
     protected List<RunningElevator>    elevatorList = null;
     protected int                           rotateElevator = 0;
@@ -91,6 +91,9 @@ public class ElevatorSystem {
     }
     
     public Elevator getElevator( int num ) {
+        if ( num < 0 ) {
+             num = 0;
+        }
         if ( num < elevatorList.size() ) {
             return elevatorList.get( num ).elevator; 
         }
@@ -207,7 +210,7 @@ public class ElevatorSystem {
        ElevatorSystem   system = new ElevatorSystem();
        ParseList        parser = new ParseList( system );
        Thread           parseThread = new Thread( parser );
-       
+
        ParseCommand.setElevatorSystem( system );
        
        // Parse over command line args:
@@ -221,5 +224,8 @@ public class ElevatorSystem {
            system.reportStatus();
            ElevatorSystem.sleepSeconds( system.getClass().getName(), 1 );
        }
+       system.reportStatus();
+       System.out.print( "ElevatorSystem Offline.\n" );
+       System.exit(0);
    }
 }

@@ -24,6 +24,7 @@ public class ParseList implements Runnable {
         parseList = new ArrayList<ParseCommand>();
         
         parseList.add( new ParseQuit() );
+        parseList.add( new ParseStatus() );
         parseList.add( new ParseNumberElevatorFloors() );
         parseList.add( new ParseElevator() );
         parseList.add( new ParseFloor() );

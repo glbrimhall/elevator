@@ -15,14 +15,14 @@ import java.util.regex.*;
 public class ParseElevator extends ParseCommand {
 
     public ParseElevator() {
-        super( "e(\\d+)f([0-9,-]+)", "elevator <num> floorlist: example e2f2,4-6 means elevator 2 floor button 2, 4 through 6 pressed" );
+        super( "e(\\d+)f([0-9,-]+)", "elevator <num> floorlist: example e2f2,4-6 means elevator 2 floor button 2, 4 through 6 pressed, note elevator is 1 based" );
     }
 
     public String Parse( String cmd ) {
         Matcher m = compiledPattern.matcher( cmd );
 
         while( m.find() ) {
-            int         elevatorNumber = Integer.parseInt( m.group( 1 ) );
+            int         elevatorNumber = Integer.parseInt( m.group( 1 ) ) - 1;
             Elevator    elevator = getElevatorSystem().getElevator( elevatorNumber );
             String[]    commaList = m.group( 2 ).split( "," );
             

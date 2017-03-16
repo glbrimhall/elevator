@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package com.glbrimhall.elevator;
 
 import java.util.Formatter;
@@ -41,7 +42,7 @@ public class Elevator implements Runnable {
         // floor zero, waiting for first floor request:
         stopAndOpenDoors(0);
         
-        while( ! isInMaintenence() )
+        while( ! isOffline() )
         {
             movingToNextFloor();
         }
@@ -88,7 +89,7 @@ public class Elevator implements Runnable {
             report.append( "waiting. " );
         }
 
-        report.append( "Queue " );
+        report.append( "QUEUE " );
         report.append( getQueue().report() );
         report.append( "\n" );
         return report.toString();
