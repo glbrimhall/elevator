@@ -5,7 +5,7 @@
  *
  * Elevator Simulator program is free software: you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License as published
- * by the Free Software Foundation, either version 3 of the License.
+ * by the Free Software Foundation, version 3 of the License.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,7 +21,12 @@ import java.util.Formatter;
 
 /**
  *
- * @author geoff
+ * @author glBrimhall
+ * 
+ * Elevator represents a single elevator, containing it's ElevatorQueue. It 
+ * manages movement, the opening/closing of doors, buttons pressed within an
+ * elevator and whether an elevator is in maintenence.
+ * 
  */
 public class Elevator implements Runnable {
 

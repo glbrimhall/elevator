@@ -5,7 +5,7 @@
  *
  * Elevator Simulator program is free software: you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License as published
- * by the Free Software Foundation, either version 3 of the License.
+ * by the Free Software Foundation, version 3 of the License.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -26,7 +26,11 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author geoff
+ * @author glBrimhall
+ * 
+ * ElevatorSystem is the controlling class containing an array of Elevators, 
+ * handling initialization, shutdown, maintenence, floor requests, etc.
+ * 
  */
 public class ElevatorSystem {
 
@@ -69,7 +73,7 @@ public class ElevatorSystem {
         return online;
     }
 
-    public void Initialize( int numElevators, int numFloors ) {
+    public void initialize( int numElevators, int numFloors ) {
         maxFloors = numFloors;
 
         // Create the elevator objects
@@ -89,7 +93,7 @@ public class ElevatorSystem {
         }
     }
    
-    public void Shutdown() {
+    public void shutdown() {
 
         running = false;
 

@@ -6,8 +6,9 @@
 package com.glbrimhall.elevator;
 
 /**
+ * @author glBrimhall
  *
- * @author geoff
+ * The RunningElevator class associates as a pair an Elevator and it's Thread
  */
 public class RunningElevator {
     public Thread   thread;

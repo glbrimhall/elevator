@@ -5,7 +5,7 @@
  *
  * Elevator Simulator program is free software: you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License as published
- * by the Free Software Foundation, either version 3 of the License.
+ * by the Free Software Foundation, version 3 of the License.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -22,8 +22,10 @@ import static com.glbrimhall.elevator.ParseCommand.getElevatorSystem;
 import java.util.regex.Matcher;
 
 /**
+ * @author glBrimhall
  *
- * @author geoff
+ * The ParseQuit class maps the "quit" user input to 
+ * ElevatorSystem.shutdown()
  */
 public class ParseQuit extends ParseCommand {
 
@@ -34,7 +36,7 @@ public class ParseQuit extends ParseCommand {
     @Override
     public String Parse( String cmd ) {
 
-        elevatorSystem.Shutdown();
+        elevatorSystem.shutdown();
 
         return OK;
     }

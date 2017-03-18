@@ -5,7 +5,7 @@
  *
  * Elevator Simulator program is free software: you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License as published
- * by the Free Software Foundation, either version 3 of the License.
+ * by the Free Software Foundation, version 3 of the License.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,8 +21,13 @@ import java.util.Objects;
 
 /**
  *
- * @author geoff
- * Implement Comparable so that it could be used in a sorted container
+ * @author glBrimhall
+ * 
+ * FloorRequest implements Comparable so that it could be used in a sorted container
+ * It contains the floor number and direction ( UP or DOWN ) request.
+ * The UP/DOWN are mapped to (+1/-1) * ( floor number ), 
+ * so DOWN requests come before UP requests when sorted, ie DOWN 17 => -17.
+ * The bottom most floor, 0, is always aligned to be UP.
  */
 public class FloorRequest implements Comparable< FloorRequest > {
     public int      floor;
@@ -104,7 +109,4 @@ public class FloorRequest implements Comparable< FloorRequest > {
         floor = obj.floor;
         direction = obj.direction;
     }
-        
-
-
 }

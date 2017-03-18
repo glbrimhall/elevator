@@ -5,7 +5,7 @@
  *
  * Elevator Simulator program is free software: you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License as published
- * by the Free Software Foundation, either version 3 of the License.
+ * by the Free Software Foundation, version 3 of the License.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,9 +20,10 @@ package com.glbrimhall.elevator;
 import java.util.regex.*;
 
 /**
- * This really is meant to be an interface, however for code convienience it's nice
+ * @author glBrimhall
  *
- * @author geoff
+ * The ParseElevator class maps the "e[elevatorNum]f[floorButtonList]" 
+ * user input to Elevator[elevatorNum].buttonPressed( floorButtonList )
  */
 public class ParseElevator extends ParseCommand {
 

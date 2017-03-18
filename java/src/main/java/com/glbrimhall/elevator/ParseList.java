@@ -5,7 +5,7 @@
  *
  * Elevator Simulator program is free software: you can redistribute it and/or 
  * modify it under the terms of the GNU General Public License as published
- * by the Free Software Foundation, either version 3 of the License.
+ * by the Free Software Foundation, version 3 of the License.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,8 +24,10 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 
 /**
+ * @author glBrimhall
  *
- * @author geoff
+ * The ParseList is the master parsing class, mapping all user input to sub 
+ * parsing classes such ParseFloor, Parse Elevator in it's own thread
  */
 public class ParseList implements Runnable {
     protected ArrayList<ParseCommand>  parseList = null;
