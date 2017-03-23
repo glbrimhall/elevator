@@ -18,12 +18,23 @@
 package com.glbrimhall.elevator;
 
 /**
- * @author glBrimhall
- *
  * The IParseCommand defines the parsing interface, which is provides a 
  * first unique char token for each command and a subsequent Parse method.
  */
 interface IParseCommand {
+
+    /** 
+     * Returns the first character token of the parse command, to allow
+     * quickly mapping an input command to it's parsing object.
+     */
     public char getToken();
+
+    /** 
+     * Parse an input command mapping to a functional call in the ElevatorSystem.
+     * 
+     * @param cmd the string command
+     * @return "OK" indicating successful parsing, or an error 
+     * message while parsing.
+     */
     public String Parse( String cmd );
 }

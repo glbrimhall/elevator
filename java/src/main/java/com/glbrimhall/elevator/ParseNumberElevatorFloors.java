@@ -22,8 +22,6 @@ import static com.glbrimhall.elevator.ParseCommand.getElevatorSystem;
 import java.util.regex.Matcher;
 
 /**
- * @author glBrimhall
- *
  * The ParseNumberElevatorFloors class maps the "n[numElevator]f[numFloors]" 
  * user input to ElevatorSystem.initialize( numElevator, numFloors )
  */
@@ -41,7 +39,7 @@ public class ParseNumberElevatorFloors extends ParseCommand {
             int  numElevators = Integer.parseInt( m.group( 1 ) );
             int  numFloors = Integer.parseInt( m.group( 2 ) );
 
-            getElevatorSystem().Initialize( numElevators, numFloors );
+            getElevatorSystem().initialize( numElevators, numFloors );
         }
         return OK;
     }

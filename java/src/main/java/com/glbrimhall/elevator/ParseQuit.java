@@ -22,8 +22,6 @@ import static com.glbrimhall.elevator.ParseCommand.getElevatorSystem;
 import java.util.regex.Matcher;
 
 /**
- * @author glBrimhall
- *
  * The ParseQuit class maps the "quit" user input to 
  * ElevatorSystem.shutdown()
  */

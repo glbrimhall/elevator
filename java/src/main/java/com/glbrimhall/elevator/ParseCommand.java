@@ -20,8 +20,6 @@ package com.glbrimhall.elevator;
 import java.util.regex.*;
 
 /**
- * @author glBrimhall
- *
  * The ParseCommand implements IParseCommand, parent to the rest of the
  * ParseXXXX classes.
  */
@@ -32,22 +30,37 @@ public class ParseCommand implements IParseCommand {
     protected static ElevatorSystem elevatorSystem;
     protected static final String OK = "OK";
     
+    /**
+     * Initializes a Parse object, setting the {@link IParseCommand#getToken() }
+     * value from the passed in pattern, as well as the help text for the command.
+     * 
+     * @param pattern the regex pattern for the command
+     * @param help a help string to showing how to construct the command
+     */
     public ParseCommand( String pattern, String help ) {
         compiledPattern = Pattern.compile( pattern );
         helpString = help;
         token = pattern.charAt( 0 );
-        }
+    }
 
+    /**
+     * Returns the global ElevatorSystem instance used by the parsers
+     */
     public static ElevatorSystem getElevatorSystem() {
         return elevatorSystem;
     }
 
+    /**
+     * Sets the global ElevatorSystem instance used by the parsers
+     */
     public static void setElevatorSystem(ElevatorSystem elevatorSystem) {
         ParseCommand.elevatorSystem = elevatorSystem;
     }
 
+    @Override
     public char getToken() { return token; }
     
+    @Override
     public String Parse( String cmd ) {
         return OK;
     }

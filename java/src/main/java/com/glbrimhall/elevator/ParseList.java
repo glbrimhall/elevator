@@ -24,52 +24,74 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 
 /**
- * @author glBrimhall
- *
- * The ParseList is the master parsing class, mapping all user input to sub 
- * parsing classes such ParseFloor, Parse Elevator in it's own thread
+ * The ParseList is the master parsing class running in it's own thread.
+ * It maps all user input to sub parsing classes such {@link ParseFloor}, 
+ * {@link ParseElevator}.
  */
 public class ParseList implements Runnable {
-    protected ArrayList<ParseCommand>  parseList = null;
-    protected ElevatorSystem           elevatorSystem = null;
+    protected ArrayList<ParseCommand>   parseList = null;
+    protected Thread                    thread = null;
+    protected Scanner                   input  = null;
     
     public ParseList( ElevatorSystem system ) {
-        elevatorSystem = system;
-
+        ParseCommand.setElevatorSystem( system );
+       
+        input  = new Scanner( System.in );
         parseList = new ArrayList<ParseCommand>();
         
         parseList.add( new ParseQuit() );
         parseList.add( new ParseStatus() );
         parseList.add( new ParseNumberElevatorFloors() );
         parseList.add( new ParseElevator() );
-        parseList.add( new ParseFloor() );        
+        parseList.add( new ParseFloor() );
+        
+        thread = new Thread( this );
     }
-    
-    public String Parse( String input ) {
 
-        if ( input.isEmpty() ) { 
+    /** 
+     * Starts the parser's thread
+     */
+    public void start() { thread.start(); }
+    
+    /** 
+     * Shuts down the parser ( and its thread ). Should be called
+     * by the master thread.
+     */
+    public void stop() throws InterruptedException {
+       input.close();
+       thread.interrupt();
+       thread.join();
+    }
+
+    /**
+     * Parses user input of commands, mapping it to a particular Parse object
+     * @param input string command
+     * @return output from the Parser choosen.
+     */
+    public String Parse( String cmd ) {
+
+        if ( cmd.isEmpty() ) { 
             return "";
         }
 
-        char inputToken = input.charAt(0);
+        char cmdToken = cmd.charAt(0);
         
         for( ParseCommand command: parseList ) {
-            if ( inputToken == command.getToken() ) {
-                return command.Parse( input );
+            if ( cmdToken == command.getToken() ) {
+                return command.Parse( cmd );
             }
         }
         
-        return "Unknown command: " + input;
+        return "Unknown command: " + cmd;
     }
     
     @Override
     public void run()
     {
-        Scanner input = elevatorSystem.getInput();
+        ElevatorSystem  elevatorSystem = ParseCommand.getElevatorSystem();
 
         try {
-            while( elevatorSystem.isRunning() )
-            {
+            while( elevatorSystem.isRunning() ) {
                 if ( input.hasNextLine() ) {
                     String result = Parse( input.nextLine() );
                     System.out.println( result );

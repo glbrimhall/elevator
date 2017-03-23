@@ -23,15 +23,11 @@ import java.util.TreeSet;
 import java.util.Iterator;
 
 /**
- *
- * @author glBrimhall
- * 
  * ElevatorQueue contains the ordered queue of FloorRequests. It is designed
  * so that a forward iterator represents the current (removed) position, once
  * the end of the queue is reached it goes back to the beginning which 
  * will contain the floors to move down to. FloorRequests.compareTo(...) is what
  * makes this ordering work.
- * 
  */
 public class ElevatorQueue {
     protected TreeSet< FloorRequest >   requestedFloors = null;
@@ -47,8 +43,14 @@ public class ElevatorQueue {
         this.servicing.copy( zeroFloor );
     }
     
+    /** 
+     * Returns the FloorRequest being serviced within the queue.
+     */
     public FloorRequest getServicing() { return servicing; }
 
+    /** 
+     * Returns the ElevatorQueue is empty or not
+     */
     public synchronized boolean isEmpty() { return requestedFloors.isEmpty(); }
     
     /** 
@@ -99,6 +101,9 @@ public class ElevatorQueue {
             { return requestedFloors.first().floor; }
     }
 
+    /** 
+     * Adds a FloorRequest to the ElevatorQueue
+     */
     public synchronized void addFloor( FloorRequest newFloor )
     {
         boolean waiting = requestedFloors.isEmpty();
@@ -113,38 +118,20 @@ public class ElevatorQueue {
             return;
         }
 
-        // Java implementatin of iterators suck !
-        // Have to do this incredibly inefficient recreation
-        // of the iterator, looping through all elements
-        // just to avoid java.util.ConcurrentModificationException
-      
         moveFloor = requestedFloors.tailSet( servicing ).iterator();
-
-        return;
-        /*        
-        if ( 0 < requestedFloors.first().compareTo( servicing ) ) {
-            return;
-        }
-
-        while( moveFloor.hasNext() ) {
-            FloorRequest next = moveFloor.next();
-            
-            if ( ElevatorSystem.isDebugging() ) {
-                System.out.println( "moveFloor syncing from [" + next.toString() 
-                    + "] to [" + servicing.toString() + "]" );
-            }
-            if ( 0 < next.compareTo( servicing ) ) {
-                break;
-            }
-        }
-        */
     }
 
+    /** 
+     * Returns if the ElevatorQueue already contains a FloorRequest
+     */
     public synchronized boolean containsFloor( FloorRequest newFloor )
     {
         return requestedFloors.contains( newFloor );
     }
 
+    /** 
+     * Bumps to the next floor request within the queue.
+     */
     public synchronized void moveFloor()
     {
         if ( ! moveFloor.hasNext() )
@@ -165,7 +152,7 @@ public class ElevatorQueue {
      * on a floor. 
      * @param request the floor and direction request
      * @return the distance from the elevator to the request. NOTE it
-     *         may return a negative value if elevator is already handling request
+     *         may return a negative value if elevator is already handling that request
      */
     public synchronized int distanceToFloor( FloorRequest request )
     {
@@ -214,6 +201,9 @@ public class ElevatorQueue {
         return distance;
     }
     
+    /**
+     * Returns a string representation of the queue.
+     */
     public synchronized String report() {
 
         if ( requestedFloors.isEmpty() ) {
@@ -247,15 +237,19 @@ public class ElevatorQueue {
         return queue.toString();
     }
 
-    public synchronized static void reportQueues( List<RunningElevator> queues, int tab )
+    /**
+     * Returns a string representation of a list of ElevatorQueue. 
+     * Note this is an expensive operation with a class thread block.
+     */
+    public synchronized static void reportQueues( List<Elevator> queues, int tab )
     {
         if ( tab < 1 )
             { tab = 4; }
 
         ArrayList< Iterator< FloorRequest > > elevatorList = new ArrayList();
         
-        for( RunningElevator i: queues )
-            { elevatorList.add( i.elevator.getQueue().requestedFloors.iterator() ); }
+        for( Elevator i: queues )
+            { elevatorList.add( i.getQueue().requestedFloors.iterator() ); }
         
         int finished = elevatorList.size();
         

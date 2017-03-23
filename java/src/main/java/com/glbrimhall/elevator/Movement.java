@@ -18,8 +18,6 @@
 package com.glbrimhall.elevator;
 
 /**
- * @author glBrimhall
- *
  * The Movement enum represents an UP or DOWN action with an elevator.
  */
 public enum Movement {

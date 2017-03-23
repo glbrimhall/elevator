@@ -20,14 +20,14 @@ package com.glbrimhall.elevator;
 import java.util.Objects;
 
 /**
- *
- * @author glBrimhall
- * 
  * FloorRequest implements Comparable so that it could be used in a sorted container
  * It contains the floor number and direction ( UP or DOWN ) request.
- * The UP/DOWN are mapped to (+1/-1) * ( floor number ), 
- * so DOWN requests come before UP requests when sorted, ie DOWN 17 => -17.
+ * The UP/DOWN are mapped to (+1/-1) * (floor number), 
+ * so DOWN requests come before UP requests when sorted, ie DOWN 17 maps to -17.
  * The bottom most floor, 0, is always aligned to be UP.
+ * This ordering has been chosen so that in the sorted container, after forward
+ * iterating to the end, just reset to the beginning to service the DOWN 
+ * requests from the top floor down to the bottom floor.
  */
 public class FloorRequest implements Comparable< FloorRequest > {
     public int      floor;

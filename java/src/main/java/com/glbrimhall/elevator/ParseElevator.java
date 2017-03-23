@@ -20,8 +20,6 @@ package com.glbrimhall.elevator;
 import java.util.regex.*;
 
 /**
- * @author glBrimhall
- *
  * The ParseElevator class maps the "e[elevatorNum]f[floorButtonList]" 
  * user input to Elevator[elevatorNum].buttonPressed( floorButtonList )
  */
@@ -31,6 +29,7 @@ public class ParseElevator extends ParseCommand {
         super( "e(\\d+)f([0-9,-]+)", "elevator <num> floorlist: example e2f2,4-6 means elevator 2 floor button 2, 4 through 6 pressed, note elevator is 1 based" );
     }
 
+    @Override
     public String Parse( String cmd ) {
         Matcher m = compiledPattern.matcher( cmd );
 
