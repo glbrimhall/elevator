@@ -23,7 +23,8 @@ import java.util.regex.Matcher;
 
 /**
  * The ParseQuit class maps the "quit" user input to 
- * ElevatorSystem.shutdown()
+ * {@link ElevatorSystem#shutdown() }
+ * 
  */
 public class ParseQuit extends ParseCommand {
 

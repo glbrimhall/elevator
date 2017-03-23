@@ -20,9 +20,9 @@ package com.glbrimhall.elevator;
 import java.util.Formatter;
 
 /**
- * Elevator represents a single elevator, containing it's {@link ElevatorQueue}.
- * It manages movement, the opening/closing of doors, buttons pressed within an
- * elevator and whether an elevator is in maintenence.
+ * Elevator represents a single elevator, containing it's {@link ElevatorQueue}
+ * and running Thread. It manages movement, the opening/closing of doors, 
+ * buttons pressed within an elevator and whether an elevator is in maintenence.
  */
 public class Elevator implements Runnable {
 

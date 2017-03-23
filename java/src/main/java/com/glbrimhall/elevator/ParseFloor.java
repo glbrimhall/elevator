@@ -23,7 +23,8 @@ import java.util.regex.Matcher;
 
 /**
  * The ParseFloor class maps the "f[floorNum][up|down]" 
- * user input to ElevatorSystem.floorRequest( floorNum, [up|down] )
+ * user input to {@link ElevatorSystem#floorRequest(int,Movement) 
+ * ElevatorSystem.floorRequest( floorNum, [up|down] ) }
  */
 public class ParseFloor extends ParseCommand {
 

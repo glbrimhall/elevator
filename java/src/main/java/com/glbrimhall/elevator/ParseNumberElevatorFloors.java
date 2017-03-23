@@ -23,7 +23,8 @@ import java.util.regex.Matcher;
 
 /**
  * The ParseNumberElevatorFloors class maps the "n[numElevator]f[numFloors]" 
- * user input to ElevatorSystem.initialize( numElevator, numFloors )
+ * user input to {@link ElevatorSystem#initialize(int, int) 
+ * ElevatorSystem.initialize( numElevator, numFloors ) }
  */
 public class ParseNumberElevatorFloors extends ParseCommand {
 

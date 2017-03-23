@@ -23,11 +23,11 @@ import java.util.TreeSet;
 import java.util.Iterator;
 
 /**
- * ElevatorQueue contains the ordered queue of FloorRequests. It is designed
- * so that a forward iterator represents the current (removed) position, once
- * the end of the queue is reached it goes back to the beginning which 
- * will contain the floors to move down to. FloorRequests.compareTo(...) is what
- * makes this ordering work.
+ * ElevatorQueue contains the ordered queue of {@link FloorRequest}. It is designed
+ * so that a forward iterator represents the current floor position and direction, 
+ * once the end of the queue is reached it goes back to the beginning which 
+ * will contain the floors to move down to. What makes this work is the ordering
+ * implemented in {@link FloorRequest}
  */
 public class ElevatorQueue {
     protected TreeSet< FloorRequest >   requestedFloors = null;

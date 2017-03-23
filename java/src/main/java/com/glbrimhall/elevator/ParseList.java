@@ -65,7 +65,7 @@ public class ParseList implements Runnable {
 
     /**
      * Parses user input of commands, mapping it to a particular Parse object
-     * @param input string command
+     * @param cmd string input
      * @return output from the Parser choosen.
      */
     public String Parse( String cmd ) {

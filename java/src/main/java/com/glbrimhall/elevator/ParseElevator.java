@@ -21,7 +21,8 @@ import java.util.regex.*;
 
 /**
  * The ParseElevator class maps the "e[elevatorNum]f[floorButtonList]" 
- * user input to Elevator[elevatorNum].buttonPressed( floorButtonList )
+ * user input to {@link Elevator#buttonPressed(int) 
+ * Elevator[elevatorNum].buttonPressed( floorButtonList ) }
  */
 public class ParseElevator extends ParseCommand {
 
