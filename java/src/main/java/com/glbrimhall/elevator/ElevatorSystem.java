@@ -36,11 +36,13 @@ public class ElevatorSystem {
     protected int                           rotateElevator = 0;
     protected boolean                       running = true;
     protected String                        lastReport = null;
+    protected ParseList                     parser = null;
 
     public ElevatorSystem()
     {
         elevatorList = Collections.synchronizedList(new LinkedList< Elevator >() );
         lastReport = new String();
+        parser = new ParseList( this );
     }
 
     /** 
@@ -54,6 +56,11 @@ public class ElevatorSystem {
      */
     public List< Elevator > getElevatorList() { return elevatorList; }
     
+    /** 
+     * Returns the user input parser.
+     */
+    public ParseList getParser() { return parser; }
+
     /** 
      * Indicates the {@link #initialize(int, int)} method has been called.
      */
@@ -170,7 +177,7 @@ public class ElevatorSystem {
     /** 
      * Waits on all started threads to shutdown, closes down the input
      */
-    public void waitToShutdown( ParseList parser ) 
+    public void waitToShutdown() 
     {
        try {
            for( Elevator elevator: elevatorList ) {
@@ -294,7 +301,7 @@ public class ElevatorSystem {
    public static void main( String[] args ) {
        
        ElevatorSystem   system = new ElevatorSystem();
-       ParseList        parser = new ParseList( system );
+       ParseList        parser = system.getParser();
 
        parser.start();
        
@@ -308,7 +315,7 @@ public class ElevatorSystem {
            ElevatorSystem.sleepSeconds( system.getClass().getName(), 1 );
        }
        
-       //system.waitToShutdown( parser );
+       //system.waitToShutdown();
        system.reportStatus();
        System.out.print( "ElevatorSystem Offline.\n" );
        System.out.flush();

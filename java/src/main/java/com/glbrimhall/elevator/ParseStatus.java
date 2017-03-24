@@ -18,8 +18,6 @@
 package com.glbrimhall.elevator;
 
 import static com.glbrimhall.elevator.ParseCommand.OK;
-import static com.glbrimhall.elevator.ParseCommand.getElevatorSystem;
-import java.util.regex.Matcher;
 
 /**
  * The ParseStatus class maps the "status" user input to 
@@ -28,7 +26,7 @@ import java.util.regex.Matcher;
 public class ParseStatus extends ParseCommand {
 
     public ParseStatus() {
-        super( "status", "Report on the elevatorSystem status" );
+        super( "status", "report on the elevatorSystem status" );
     }
 
     @Override

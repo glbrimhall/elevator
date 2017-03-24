@@ -29,7 +29,7 @@ import java.util.regex.Matcher;
 public class ParseQuit extends ParseCommand {
 
     public ParseQuit() {
-        super( "quit", "quit the elevatorSystem and shutdown" );
+        super( "quit", "put the elevatorSystem in maintenence mode and shutdown" );
     }
 
     @Override

@@ -39,6 +39,7 @@ public class ParseList implements Runnable {
         input  = new Scanner( System.in );
         parseList = new ArrayList<ParseCommand>();
         
+        parseList.add( new ParseHelp() );
         parseList.add( new ParseQuit() );
         parseList.add( new ParseStatus() );
         parseList.add( new ParseNumberElevatorFloors() );
@@ -83,6 +84,28 @@ public class ParseList implements Runnable {
         }
         
         return "Unknown command: " + cmd;
+    }
+
+    /**
+     * Shows the info on available user commands
+     */
+    public void showHelp() {
+        StringBuilder help = new StringBuilder();
+        
+        help.append( "\n" );
+        help.append( "Elevator Simulater Help\n" );
+        help.append( "   Available Commands:\n" );
+    
+        for( ParseCommand command: parseList ) {
+            help.append( "   " );
+            help.append( command.compiledPattern.pattern() );
+            help.append( " - " );
+            help.append( command.helpString );
+            help.append( "\n" );
+        }
+        help.append( "\n" );
+        
+        System.out.print( help.toString() );
     }
     
     @Override
