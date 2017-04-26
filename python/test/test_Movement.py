@@ -1,15 +1,23 @@
-// Load Unit.js module
-exports.test_Movement = function() {
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 
-var Movement = require('../lib/Movement.js');
-var test = require('unit.js');
-    
-// just for example of tested value
-var direction = Movement.DOWN;
+import sys
+import os.path
+import tempfile
+import unittest
 
-// assert that example variable is a string
-test.value( direction == Movement.DOWN ).isTrue();
+sys.path.insert(1, os.path.join(sys.path[0], '../src'))
 
-// or with assert
-test.assert(typeof direction == 'Movement');
-}
+from Movement import Movement
+
+class TestMovement(unittest.TestCase):
+
+    def setUp( self ):
+        pass
+
+    def test_Movement(self):
+        direction = Movement.DOWN
+        self.assertEqual( Movement.DOWN, direction )
+
+if __name__ == '__main__':
+    unittest.main()

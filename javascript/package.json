@@ -4,7 +4,7 @@
   "description": "elevator system emulator in javascript",
   "main": "main.js",
   "scripts": {
-    "test": "mocha test/tests.js"
+    "test": "mocha --full-trace --reporter spec --recursive --growl test/tests.js"
   },
   "repository": {
     "type": "git",

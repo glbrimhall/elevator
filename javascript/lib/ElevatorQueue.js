@@ -15,12 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.glbrimhall.elevator;
+"use strict";
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeSet;
-import java.util.Iterator;
+var SortedSet = require( "collecitons/sorted-set" );
 
 /**
  * ElevatorQueue contains the ordered queue of {@link FloorRequest}. It is designed

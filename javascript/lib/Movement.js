@@ -15,10 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+"use strict";
 
 /**
  * The Movement enum represents an UP or DOWN action with an elevator.
  */
+
 var Movement = Object.freeze( {
    /**
      * Movement enum provides high level control info on state of the elevator
