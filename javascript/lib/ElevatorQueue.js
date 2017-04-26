@@ -17,7 +17,7 @@
  */
 "use strict";
 
-var SortedSet = require( "collecitons/sorted-set" );
+var SortedArraySet = require( "collecitons/sorted-set" );
 
 /**
  * ElevatorQueue contains the ordered queue of {@link FloorRequest}. It is designed
@@ -27,12 +27,13 @@ var SortedSet = require( "collecitons/sorted-set" );
  * implemented in {@link FloorRequest}
  */
 function ElevatorQueue() {
-    this.requestedFloors = new TreeSet< FloorRequest >();
+    this.requestedFloors = new SortedArraySet()
     this.moveFloor = this.requestedFloors.iterator();
     this.servicing = new FloorRequest( 0, Movement.UP );
     this.servicing.copy( zeroFloor );
 }
     
+
     /** 
      * Returns the FloorRequest being serviced within the queue.
      */
