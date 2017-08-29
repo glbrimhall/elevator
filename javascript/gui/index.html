@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<!-- Code initially taken from http://blog.sklambert.com/html5-game-tutorial-game-ui-canvas-vs-dom/#file-size, then severly edited  -->
+<head>
+  <meta charset="UTF-8">
+  <title>Elevator Game</title>
+  <link rel="stylesheet" href="elevator.css" type="text/css" media="screen">
+  <script type="text/javascript" src="jquery.2.1.1.min.js"></script>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="sound sound-off"></div>
+    <div id="menu">
+      <div id="progress">
+        <div id="percent">Downloading: <span id="p"></span></div>
+        <progress id="progress-bar" value="0"></progress>
+      </div>
+      <div id="main">
+        <h1>Elevator Game</h1>
+        <ul>
+          <li><a href="javascript:void(0)" class="button play">Start Game</a></li>
+          <li><a href="javascript:void(0)" class="button credits">Credits</a></li>
+        </ul>
+      </div>
+    </div>
+    <div id="game-over">
+      <h2>You ran <AAAAAAspan id="score"></span> meters!</h2>
+      <a href="javascript:void(0)" class="button restart">Try again?</a>
+    </div>
+  </div>
+  <!-- script type="text/javascript" src="elevator.js"></script -->
+</body>
+</html>
